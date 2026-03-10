@@ -21,8 +21,6 @@ const TUTORIAL_TEXT: &str = r#"Thank you for installing ERFPS!
 
 To switch between 1st and 3rd person hold Interact and press Lock on.
 
-This mod can be configured in erfps2.toml without closing the game.
-
 <?keyicon@27?>+<?keyicon@15?>: Switch perspectives"#;
 
 pub fn show_tutorial() {
@@ -89,13 +87,14 @@ fn modify_tutorial_contents<'r, 't>(
     row.set_display_min_time(1.0);
     row.set_display_time(3.0);
 
-    let title_len = title.len();
-    title[..(TUTORIAL_TITLE.len() + 1).min(title_len)]
-        .copy_from_slice(&TUTORIAL_TITLE.encode_utf16().chain([0]).collect::<Vec<_>>());
+    let title_len = (TUTORIAL_TITLE.len() + 1).min(title.len());
+    title[..title_len].copy_from_slice(
+        &TUTORIAL_TITLE.encode_utf16().chain([0]).collect::<Vec<_>>()[..title_len],
+    );
 
-    let text_len = text.len();
-    text[..(TUTORIAL_TEXT.len() + 1).min(text_len)]
-        .copy_from_slice(&TUTORIAL_TEXT.encode_utf16().chain([0]).collect::<Vec<_>>());
+    let text_len = (TUTORIAL_TEXT.len() + 1).min(text.len());
+    text[..text_len]
+        .copy_from_slice(&TUTORIAL_TEXT.encode_utf16().chain([0]).collect::<Vec<_>>()[..text_len]);
 
     OriginalContents {
         row,
