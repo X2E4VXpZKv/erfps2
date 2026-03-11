@@ -42,6 +42,18 @@ impl ConfigUpdater {
             let mut path = current_module_path()?;
             log::info!("module path: {path:?}");
             path.set_file_name(Self::CONFIG_NAME);
+
+            #[cfg(debug_assertions)]
+            if !path.exists()
+                && let Some(parent) = path.parent()
+            {
+                // Step out to the parent folder, assuming a libhotpatch reload.
+                let in_parent_path = parent.with_file_name(Self::CONFIG_NAME);
+                if in_parent_path.exists() {
+                    path = in_parent_path;
+                }
+            }
+
             path.into_boxed_path()
         };
 
@@ -70,7 +82,6 @@ impl ConfigUpdater {
             self.last_update.store(now, Ordering::Release);
 
             let timestamp = fs::metadata(&self.config_path)
-                .inspect_err(Self::report_fs_error)
                 .and_then(|m| m.modified())
                 .map(|timestamp| timestamp.duration_since(UNIX_EPOCH).unwrap());
 
