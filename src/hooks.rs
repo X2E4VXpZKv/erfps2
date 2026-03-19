@@ -280,7 +280,8 @@ unsafe fn hand_posture_control(some_player: *const PlayerIns) -> Option<i32> {
         return None;
     }
 
-    Some(15)
+    // Some(15)
+    None
 }
 
 #[cfg_attr(debug_assertions, libhotpatch::hotpatch)]
